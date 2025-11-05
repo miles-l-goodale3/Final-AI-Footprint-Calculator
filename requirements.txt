@@ -1,1 +1,6 @@
-streamlit
+streamlit==1.22
+pandasql
+streamlit_gsheets
+streamlit.connections
+st-gsheets-connections
+csv
