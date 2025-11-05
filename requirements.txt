@@ -4,3 +4,4 @@ streamlit_gsheets
 streamlit.connections
 st-gsheets-connections
 csv
+git+https://github.com/streamlit/gsheets-connection
