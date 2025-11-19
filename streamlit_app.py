@@ -4,6 +4,10 @@ from streamlit_gsheets import GSheetsConnection
 conn = st.connection("gsheets", type=GSheetsConnection)
 df = conn.read(spreadsheet="Capstone_Data",worksheet="User_Inputs")
 
+def store_in_db(data: dict):
+    conn.write(df)
+
+
 if 'clicked' not in st.session_state:
     st.session_state.clicked = False
 
@@ -100,9 +104,11 @@ if st.session_state.page == "form":
             "q_2": q_2,
             "q_3": q_3,
         }
+        store_in_db({"dem_q1": dem_q1,"dem_q2":dem_q2,"q_1":q_1,"q_2":q_2,"q_3":q_3})
         try:
             q_2_tokens=estimate_tokens(q_2,method="average")
             results = {"per_week": {}, "if_all_used": {}, "comparisons": {}, "google": {}, "if_all_used_goog": {}, "goog_comp": {}, "training_costs": {}}
+            store_in_db({"q2_tokens":q_2_tokens})
             if q_1>0:
                 co2_per_qmt=q_2_tokens*0.03
                 co2_per_week=round((co2_per_qmt*q_1),2)
@@ -115,9 +121,10 @@ if st.session_state.page == "form":
                     "water_liters": l_per_week,
                     "energy_kwh": energy_per_week,
                 }
-                wai_co2=round((co2_per_week*2225),2)
-                wai_water=round((l_per_week*2225),2)
-                wai_energy=round((energy_per_week*2225),2)
+                store_in_db({"co2_per_week":co2_per_week,"l_per_week":l_per_week,"energy_per_week":energy_per_week})
+                wai_co2=round((co2_per_week*2223),2)
+                wai_water=round((l_per_week*2223),2)
+                wai_energy=round((energy_per_week*2223),2)
                 results["if_all_used"] = {
                     "wai_co2_metric_tons": wai_co2,
                     "wai_water_liters": wai_water,
@@ -136,13 +143,14 @@ if st.session_state.page == "form":
                     "g_co2_metric_tons": google_co2,
                     "g_water_liters": google_water,
                  }
+                store_in_db({"google_energy":google_energy,"google_co2":google_co2,"google_water":google_water})
                 if google_energy>1.4:
                     fridge_comp=google_energy/1.5
                     fcomp_days=round((fridge_comp*2),2)
                     results["goog_comp"]["fridge_days_equivalent"] = fcomp_days
-                wgoog_energy=round((google_energy*2225),2)
-                wgoog_co2=round((google_co2*2225),2)
-                wgoog_water=round((google_water*2225),2)
+                wgoog_energy=round((google_energy*2223),2)
+                wgoog_co2=round((google_co2*2223),2)
+                wgoog_water=round((google_water*2223),2)
                 results["if_all_used_goog"] = {
                     "wg_energy_kwh": wgoog_energy,
                     "wg_co2_metric_tons": wgoog_co2,
