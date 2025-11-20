@@ -103,7 +103,6 @@ if st.session_state.page == "form":
         try:
             q_2_tokens=estimate_tokens(q_2,method="average")
             results = {"per_week": {}, "if_all_used": {}, "comparisons": {}, "google": {}, "if_all_used_goog": {}, "goog_comp": {}, "training_costs": {}}
-            store_in_db({"q2_tokens":q_2_tokens})
             if q_1>0:
                 co2_per_qmt=q_2_tokens*0.03
                 co2_per_week=round((co2_per_qmt*q_1),2)
