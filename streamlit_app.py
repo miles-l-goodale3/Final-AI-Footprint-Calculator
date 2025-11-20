@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
+import pandas as pd
 
 conn = st.connection("gsheets", type=GSheetsConnection)
 df = conn.read(spreadsheet="Capstone_Data",worksheet="User_Inputs")
@@ -148,8 +149,9 @@ if st.session_state.page == "form":
                     "wg_co2_metric_tons": wgoog_co2,
                     "wg_water_liters": wgoog_water,
                     }
-                row = [dem_q1,dem_q2,q_1,q_2,q_2_tokens,q_3,co2_per_week,l_per_week,energy_per_week,google_water,google_co2,google_energy]
-                df.append_row(row)
+                new_row = [{"dem_q1":dem_q1,"dem_q2":dem_q2,"q_1":q_1,"q_2":q_2,"q_2_tokens":q_2_tokens,"q_3":q_3,"co2_per_week":co2_per_week,"l_per_week":l_per_week,"energy_per_week":energy_per_week,"google_water":google_water,"google_co2":google_co2,"google_energy":google_energy}]
+                new_df = pd.DataFrame(new_row)
+                df = pd.concat([df,new_df],ignore_index=True)
             st.session_state.results = results
             st.session_state.page = "results"
             _safe_rerun()
