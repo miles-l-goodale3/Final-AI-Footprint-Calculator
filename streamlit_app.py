@@ -4,10 +4,6 @@ from streamlit_gsheets import GSheetsConnection
 conn = st.connection("gsheets", type=GSheetsConnection)
 df = conn.read(spreadsheet="Capstone_Data",worksheet="User_Inputs")
 
-def store_in_db(df: dict):
-    conn.write(df)
-
-
 if 'clicked' not in st.session_state:
     st.session_state.clicked = False
 
@@ -120,7 +116,6 @@ if st.session_state.page == "form":
                     "water_liters": l_per_week,
                     "energy_kwh": energy_per_week,
                 }
-                store_in_db({"co2_per_week":co2_per_week,"l_per_week":l_per_week,"energy_per_week":energy_per_week})
                 wai_co2=round((co2_per_week*2223),2)
                 wai_water=round((l_per_week*2223),2)
                 wai_energy=round((energy_per_week*2223),2)
@@ -142,7 +137,6 @@ if st.session_state.page == "form":
                     "g_co2_metric_tons": google_co2,
                     "g_water_liters": google_water,
                  }
-                store_in_db({"google_energy":google_energy,"google_co2":google_co2,"google_water":google_water})
                 if google_energy>1.4:
                     fridge_comp=google_energy/1.5
                     fcomp_days=round((fridge_comp*2),2)
