@@ -4,7 +4,7 @@ from streamlit_gsheets import GSheetsConnection
 conn = st.connection("gsheets", type=GSheetsConnection)
 df = conn.read(spreadsheet="Capstone_Data",worksheet="User_Inputs")
 
-def store_in_db(data: dict):
+def store_in_db(df: dict):
     conn.write(df)
 
 
@@ -104,7 +104,6 @@ if st.session_state.page == "form":
             "q_2": q_2,
             "q_3": q_3,
         }
-        store_in_db({"dem_q1": dem_q1,"dem_q2":dem_q2,"q_1":q_1,"q_2":q_2,"q_3":q_3})
         try:
             q_2_tokens=estimate_tokens(q_2,method="average")
             results = {"per_week": {}, "if_all_used": {}, "comparisons": {}, "google": {}, "if_all_used_goog": {}, "goog_comp": {}, "training_costs": {}}
@@ -156,6 +155,8 @@ if st.session_state.page == "form":
                     "wg_co2_metric_tons": wgoog_co2,
                     "wg_water_liters": wgoog_water,
                     }
+                row = [dem_q1,dem_q2,q_1,q_2,q_2_tokens,q_3,co2_per_week,l_per_week,energy_per_week,google_water,google_co2,google_energy]
+                df.append_row(row)
             st.session_state.results = results
             st.session_state.page = "results"
             _safe_rerun()
